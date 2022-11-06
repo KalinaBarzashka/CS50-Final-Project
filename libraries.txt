@@ -1,0 +1,19 @@
+apt - Advanced Packaging Tool (pakage manager) for Linus - used through WSL and bash (sudo apt-get update)
+
+installed python3 from python.org -> used as python in terminal; quit(); with python installed we get pip library
+PIP is Python Package Manager
+
+pip3 install flask
+pip3 install flask_session
+pip3 install cs50
+
+installed sqlite3; downloaded tools from sqlite3.org and added to path variable the sqlite3.exe
+sqlite3 command; .quit to exit
+
+create database -> sqlite3 db.db
+in sqlite mode -> .databases command to see all databases
+create table -> create table books(id INT PRIMARY KEY);
+.tables
+.schema books
+
+virtualenv package from pip3
