@@ -2,3 +2,36 @@ body {
   margin: 0;
   font-family: sans-serif;
 }
+
+/* Size for brand */
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+nav .navbar-brand .green
+{
+    color: #88CA5E;
+}
+nav .navbar-brand .rose
+{
+    color: #F1C0B9;
+}
+
+/* Colors for nav li */
+nav ul li a {
+  color: #1D741B;
+}
+
+button {
+  background-color: #88CA5E;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* https://www.canva.com/colors/color-palettes/watermelon-and-stripes/ */
