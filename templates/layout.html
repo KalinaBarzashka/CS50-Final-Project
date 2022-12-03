@@ -15,6 +15,9 @@
 
   <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> -->
   <link rel="stylesheet" href="../static/css/main.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/agency.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/state.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/monument.css') }}">
 
   <!-- https://favicon.io/emoji-favicons/money-bag/ -->
   <link href="/static/favicon.ico" rel="icon">
@@ -34,10 +37,11 @@
       <div class="collapse navbar-collapse" id="navbar">
         {% if session["user_id"] %}
         <ul class="navbar-nav me-auto mt-2">
-          <li class="nav-item"><a class="nav-link" href="/monument">Monuments</a></li>
-          <li class="nav-item"><a class="nav-link" href="/agencie">Agancies</a></li>
-          <li class="nav-item"><a class="nav-link" href="/area">Areas</a></li>
+          <li class="nav-item"><a class="nav-link" href="/monuments">Monuments</a></li>
+          <li class="nav-item"><a class="nav-link" href="/agencies">Agancies</a></li>
+          <li class="nav-item"><a class="nav-link" href="/states">States</a></li>
           <li class="nav-item"><a class="nav-link" href="/visit">My visits</a></li>
+          <li class="nav-item"><a class="nav-link" href="/monument/create">Create monument</a></li>
         </ul>
         <ul class="navbar-nav ms-auto mt-2">
           <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
@@ -51,7 +55,9 @@
       </div>
     </div>
   </nav>
-  {% block body %}{% endblock %}
+  <main class="container">
+    {% block body %}{% endblock %}
+  </main>
 </body>
 
 </html>

@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Agencies</title>
+{% endblock %}
+
+{% block body %}
+<div class="agency__container">
+  <h1>Edit Agency</h1>
+  <form class="row" method="post" action="/agency/edit/{{agency.id}}">
+    <div class="col-4 offset-4">
+      <h3>Main Information</h3>
+      <!-- Agency Name -->
+      <div class="form-group">
+        <label for="agencyName" class="form-label">Name</label>
+        <input id="agencyName" type="text" class="form-control" name="agencyName" value="{{agency.name}}">
+      </div>
+      <!-- Agency Department -->
+      <div class="form-group">
+        <label for="agencyDepartment" class="form-label">Department</label>
+        <input id="agencyDepartment" type="text" class="form-control" name="agencyDepartment"
+          value="{{agency.department}}">
+      </div>
+      <!-- Agency Button Create -->
+      <div class="form-group">
+        <button type="submit" class="btn agency-button">Edit Agency</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

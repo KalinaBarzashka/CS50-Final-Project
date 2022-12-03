@@ -23,7 +23,7 @@ class Agency(db.Model):
   def __repr__(self):
     return '<Task %r>' % self.id
 
-class Area(db.Model):
+class State(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(200), nullable=False)
   isdeleted = db.Column(db.Boolean, default=0)
@@ -35,13 +35,13 @@ class Area(db.Model):
 class Monument(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(200), nullable=False)
-  latitude = db.Column(db.Numeric(2,6), nullable=False)
-  longitude = db.Column(db.Numeric(2,6), nullable=False)
+  latitude = db.Column(db.Numeric(3,6), nullable=False)
+  longitude = db.Column(db.Numeric(3,6), nullable=False)
   agencyid = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
-  areaid = db.Column(db.Integer, db.ForeignKey('area.id'), nullable=False)
+  stateid = db.Column(db.Integer, db.ForeignKey('state.id'), nullable=False)
   dateestablished = db.Column(db.Date, nullable=True)
   acres = db.Column(db.Integer, nullable=True)
-  description = db.Column(db.String(1000), nullable=False)
+  description = db.Column(db.String(6000), nullable=False)
   imageurl = db.Column(db.String(512), nullable=False)
   isapproved = db.Column(db.Boolean, default=0)
   createdon = db.Column(db.Date, default=datetime.date(datetime.now()))
@@ -79,16 +79,15 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-@app.route("/", methods=["GET", "POST"]) # decorator
+@app.route("/", methods=["GET"]) # decorator
 def index():
-  if request.method == "POST":
-    task_content = request.form["content"]
-  else:
-    # first_agency = Agency(name="test", department="department1")
-    # db.session.add(first_agency)
-    # db.session.commit()
-    agencies = Agency.query.all()
-    return render_template("index.html", agencies=agencies)
+  # first_agency = Agency(name="test", department="department1")
+  # db.session.add(first_agency)
+  # db.session.commit()
+  agencies = Agency.query.count()
+  monuments = Monument.query.count()
+  users = User.query.count()
+  return render_template("index.html", agencies=agencies, monuments=monuments, users=users)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -175,6 +174,272 @@ def logout():
 
   # Redirect user to login form
   return redirect("/")
+
+@app.route("/agencies")
+def agency():
+  """List all agencies"""
+  agencies = Agency.query.order_by(Agency.name).all()
+  return render_template("agency/agencies.html", agencies=agencies)
+
+@app.route("/agency/create", methods=["GET", "POST"])
+def createAgency():
+  """Create new agency"""
+  # User reached route via POST (as by submitting a form via POST)
+  if request.method == "POST":
+
+    # Return handle_error if name is blank
+    name = request.form.get("agencyName")
+    if not name:
+      return handle_error("must provide name of the agency", 400)
+
+    existing = Agency.query.filter(Agency.name == name).first()
+
+    if existing:
+      return handle_error("agency with the specific name already exists", 400)
+
+    # Return handle_error if department is blank
+    department = request.form.get("agencyDepartment")
+    if not department:
+      return handle_error("must provide department of the agency", 400)
+
+    agency = Agency(name=name, department=department)
+    db.session.add(agency)
+    db.session.commit()
+
+    return redirect("/agencies")
+
+  # User reached route via GET (as by clicking a link or via redirect)
+  else:
+    return render_template("agency/create.html")
+  
+@app.route("/agency/edit/<id>", methods=["GET", "POST"])
+def editAgency(id):
+  """Edit agency"""
+
+  # User reached route via POST (as by submitting a form via POST)
+  if request.method == "POST":
+    
+    # Return handle_error if name is blank
+    name = request.form.get("agencyName")
+    if not name:
+      return handle_error("must provide name of the agency", 400)
+
+    existing = Agency.query.filter(Agency.name == name).first()
+
+    if existing:
+      return handle_error("agency with the specific name already exists", 400)
+
+    # Return handle_error if department is blank
+    department = request.form.get("agencyDepartment")
+    if not department:
+      return handle_error("must provide department of the agency", 400)
+
+    # Update record in database
+    agency = Agency.query.filter(Agency.id==id).first()
+    agency.name = name
+    agency.department = department
+    db.session.commit()
+    
+    return redirect("/agencies")
+
+  # User reached route via GET (as by clicking a link or via redirect)
+  else:
+    agency = Agency.query.filter(Agency.id==id).first()
+    return render_template("agency/edit.html", agency=agency)
+
+@app.route("/agency/delete/<id>", methods=["GET", "POST"])
+def deleteAgency(id):
+  """Delete agency"""
+
+  # User reached route via POST (as by submitting a form via POST)
+  if request.method == "POST":
+
+    agency = Agency.query.filter(Agency.id == id).first()
+
+    if not agency:
+      return handle_error("the specific agency does not exist", 400)
+
+    # Delete record from database
+    db.session.delete(agency)
+    db.session.commit()
+    
+    return redirect("/agencies")
+
+  # User reached route via GET (as by clicking a link or via redirect)
+  else:
+    agency = Agency.query.filter(Agency.id==id).first()
+    return render_template("agency/delete.html", agency=agency)
+
+@app.route("/states")
+def state():
+  """List all states"""
+  states = State.query.filter(State.isdeleted == 0).order_by(State.name).all()
+  return render_template("state/states.html", states=states)
+
+@app.route("/state/create", methods=["GET", "POST"])
+def createState():
+  """Create new state"""
+  # User reached route via POST (as by submitting a form via POST)
+  if request.method == "POST":
+
+    # Return handle_error if name is blank
+    name = request.form.get("stateName")
+    if not name:
+      return handle_error("must provide name of the state", 400)
+
+    existing = State.query.filter(State.name == name).first()
+
+    if existing:
+      return handle_error("state with the specific name already exists", 400)
+
+    state = State(name=name, createdby=session["user_id"])
+    db.session.add(state)
+    db.session.commit()
+
+    return redirect("/states")
+
+  # User reached route via GET (as by clicking a link or via redirect)
+  else:
+    return render_template("state/create.html")
+
+@app.route("/state/edit/<id>", methods=["GET", "POST"])
+def editState(id):
+  """Edit state"""
+
+  # User reached route via POST (as by submitting a form via POST)
+  if request.method == "POST":
+    
+    # Return handle_error if name is blank
+    name = request.form.get("stateName")
+    if not name:
+      return handle_error("must provide name of the state", 400)
+
+    existing = State.query.filter(State.name == name).first()
+
+    if existing:
+      return handle_error("state with the specific name already exists", 400)
+
+    # Update record in database
+    state = State.query.filter(State.id==id).first()
+    state.name = name
+    db.session.commit()
+    
+    return redirect("/states")
+
+  # User reached route via GET (as by clicking a link or via redirect)
+  else:
+    state = State.query.filter(State.id==id).first()
+    return render_template("state/edit.html", state=state)
+
+@app.route("/state/delete/<id>", methods=["GET", "POST"])
+def deleteState(id):
+  """Delete state"""
+
+  # User reached route via POST (as by submitting a form via POST)
+  if request.method == "POST":
+
+    state = State.query.filter(State.id == id).first()
+
+    if not state:
+      return handle_error("the specific state does not exist", 400)
+
+    # Delete record from database
+    db.session.delete(state)
+    db.session.commit()
+    
+    return redirect("/states")
+
+  # User reached route via GET (as by clicking a link or via redirect)
+  else:
+    state = State.query.filter(State.id==id).first()
+    return render_template("state/delete.html", state=state)
+
+@app.route("/monuments")
+def monument():
+  """List all monuments"""
+  monuments = Monument.query.filter(Monument.isdeleted == 0 and Monument.isapproved == 1).order_by(Monument.name).all()
+  return render_template("monument/monuments.html", monuments=monuments)
+
+@app.route("/monument/create", methods=["GET", "POST"])
+def createMonument():
+  """Create new monument"""
+
+  # User reached route via POST (as by submitting a form via POST)
+  if request.method == "POST":
+
+    # Return handle_error if name is blank
+    name = request.form.get("monumentName")
+    if not name:
+      return handle_error("must provide name of the monument", 400)
+
+    # Return handle_error if name is used
+    existing = Monument.query.filter(Monument.name == name).first()
+
+    if existing:
+      return handle_error("monument with the specific name already exists", 400)
+
+    # Return handle_error if description is blank
+    desc = request.form.get("monumentDescription")
+    if not desc:
+      return handle_error("must provide description of the monument", 400)
+    
+    # Return handle_error if latitude is blank
+    latitude = request.form.get("monumentLatitude")
+    if not latitude:
+      return handle_error("must provide latitude of the monument", 400)
+
+    # Return handle_error if longitude is blank
+    longitude = request.form.get("monumentLongitude")
+    if not longitude:
+      return handle_error("must provide longitude of the monument", 400)
+
+    # Return handle_error if image url is blank
+    imageurl = request.form.get("monumentImageUrl")
+    if not imageurl:
+      return handle_error("must provide image url of the monument", 400)
+
+    agencyid = request.form.get("monumentAgency")
+    stateid = request.form.get("monumentState")
+    dateestablished = datetime.strptime(request.form.get("monumentEstablished"), '%Y-%m-%d') #2022-12-03
+    acres = request.form.get("monumentAcres")
+
+    # Create monument
+    monument = Monument(name=name, description=desc, latitude=latitude, longitude=longitude, agencyid=agencyid, stateid=stateid, dateestablished=dateestablished, acres=acres, imageurl=imageurl, createdby=session["user_id"])
+    db.session.add(monument)
+    db.session.commit()
+
+    return redirect("/monuments")
+
+  # User reached route via GET (as by clicking a link or via redirect)
+  else:
+    states = State.query.filter(State.isdeleted == 0).all()
+    agencies = Agency.query.all()
+    return render_template("monument/create.html", states=states, agencies=agencies)
+
+@app.route("/monument/edit", methods=["GET", "POST"])
+def editMonument():
+  """Edit monument"""
+
+  # User reached route via POST (as by submitting a form via POST)
+  if request.method == "POST":
+    pass
+
+  # User reached route via GET (as by clicking a link or via redirect)
+  else:
+    return render_template("monument/edit.html")
+
+@app.route("/monument/delete", methods=["GET", "POST"])
+def delete_monument():
+  """delete monument"""
+
+  # User reached route via POST (as by submitting a form via POST)
+  if request.method == "POST":
+    pass
+
+  # User reached route via GET (as by clicking a link or via redirect)
+  else:
+    return render_template("monument/delete.html")
+
 
 if __name__ == "__main__":
   app.run(debug=True)
