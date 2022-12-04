@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, date
 
-from helpers import handle_error
+from helpers import handle_error, login_required
 
 # Configure application
 app = Flask(__name__)
@@ -158,8 +158,14 @@ def login():
     # Remember which user has logged in
     session["user_id"] = user.id
 
-    # Redirect user to home page
-    return redirect("/")
+    # Get next url (the one prev to login)
+    next = request.form.get("next")
+
+    if not next:
+      # Redirect user to home page
+      return redirect("/")
+    
+    return redirect(next)  
 
   # User reached route via GET (as by clicking a link or via redirect)
   else:
@@ -176,12 +182,14 @@ def logout():
   return redirect("/")
 
 @app.route("/agencies")
+@login_required
 def agency():
   """List all agencies"""
   agencies = Agency.query.order_by(Agency.name).all()
   return render_template("agency/agencies.html", agencies=agencies)
 
 @app.route("/agency/create", methods=["GET", "POST"])
+@login_required
 def createAgency():
   """Create new agency"""
   # User reached route via POST (as by submitting a form via POST)
@@ -213,6 +221,7 @@ def createAgency():
     return render_template("agency/create.html")
   
 @app.route("/agency/edit/<id>", methods=["GET", "POST"])
+@login_required
 def editAgency(id):
   """Edit agency"""
 
@@ -248,6 +257,7 @@ def editAgency(id):
     return render_template("agency/edit.html", agency=agency)
 
 @app.route("/agency/delete/<id>", methods=["GET", "POST"])
+@login_required
 def deleteAgency(id):
   """Delete agency"""
 
@@ -271,12 +281,14 @@ def deleteAgency(id):
     return render_template("agency/delete.html", agency=agency)
 
 @app.route("/states")
+@login_required
 def state():
   """List all states"""
   states = State.query.filter(State.isdeleted == 0).order_by(State.name).all()
   return render_template("state/states.html", states=states)
 
 @app.route("/state/create", methods=["GET", "POST"])
+@login_required
 def createState():
   """Create new state"""
   # User reached route via POST (as by submitting a form via POST)
@@ -303,6 +315,7 @@ def createState():
     return render_template("state/create.html")
 
 @app.route("/state/edit/<id>", methods=["GET", "POST"])
+@login_required
 def editState(id):
   """Edit state"""
 
@@ -332,6 +345,7 @@ def editState(id):
     return render_template("state/edit.html", state=state)
 
 @app.route("/state/delete/<id>", methods=["GET", "POST"])
+@login_required
 def deleteState(id):
   """Delete state"""
 
@@ -355,12 +369,14 @@ def deleteState(id):
     return render_template("state/delete.html", state=state)
 
 @app.route("/monuments")
+@login_required
 def monument():
   """List all monuments"""
   monuments = Monument.query.filter(Monument.isdeleted == 0 and Monument.isapproved == 1).order_by(Monument.name).all()
   return render_template("monument/monuments.html", monuments=monuments)
 
 @app.route("/monument/create", methods=["GET", "POST"])
+@login_required
 def createMonument():
   """Create new monument"""
 
@@ -417,6 +433,7 @@ def createMonument():
     return render_template("monument/create.html", states=states, agencies=agencies)
 
 @app.route("/monument/edit", methods=["GET", "POST"])
+@login_required
 def editMonument():
   """Edit monument"""
 
@@ -429,6 +446,7 @@ def editMonument():
     return render_template("monument/edit.html")
 
 @app.route("/monument/delete", methods=["GET", "POST"])
+@login_required
 def delete_monument():
   """delete monument"""
 
