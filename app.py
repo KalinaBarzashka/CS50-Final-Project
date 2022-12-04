@@ -235,7 +235,7 @@ def editAgency(id):
 
     existing = Agency.query.filter(Agency.name == name).first()
 
-    if existing:
+    if existing and str(existing.id) != id:
       return handle_error("agency with the specific name already exists", 400)
 
     # Return handle_error if department is blank
@@ -329,7 +329,7 @@ def editState(id):
 
     existing = State.query.filter(State.name == name).first()
 
-    if existing:
+    if existing and str(existing.id) != id:
       return handle_error("state with the specific name already exists", 400)
 
     # Update record in database
@@ -372,7 +372,7 @@ def deleteState(id):
 @login_required
 def monument():
   """List all monuments"""
-  monuments = Monument.query.filter(Monument.isdeleted == 0 and Monument.isapproved == 1).order_by(Monument.name).all()
+  monuments = Monument.query.filter(Monument.isdeleted == 0, Monument.isapproved == 1).order_by(Monument.name).all()
   return render_template("monument/monuments.html", monuments=monuments)
 
 @app.route("/monument/create", methods=["GET", "POST"])
@@ -428,36 +428,108 @@ def createMonument():
 
   # User reached route via GET (as by clicking a link or via redirect)
   else:
-    states = State.query.filter(State.isdeleted == 0).all()
-    agencies = Agency.query.all()
+    states = State.query.filter(State.isdeleted == 0).order_by(State.name).all()
+    agencies = Agency.query.order_by(Agency.name).all()
     return render_template("monument/create.html", states=states, agencies=agencies)
 
-@app.route("/monument/edit", methods=["GET", "POST"])
+@app.route("/monument/edit/<id>", methods=["GET", "POST"])
 @login_required
-def editMonument():
+def editMonument(id):
   """Edit monument"""
 
   # User reached route via POST (as by submitting a form via POST)
   if request.method == "POST":
-    pass
+
+    # Return handle_error if name is blank
+    name = request.form.get("monumentName")
+    if not name:
+      return handle_error("must provide name of the monument", 400)
+
+    # Return handle_error if name is used
+    existing = Monument.query.filter(Monument.name == name).first()
+
+    if existing and str(existing.id) != id:
+      return handle_error("monument with the specific name already exists", 400)
+
+    # Return handle_error if description is blank
+    desc = request.form.get("monumentDescription")
+    if not desc:
+      return handle_error("must provide description of the monument", 400)
+    
+    # Return handle_error if latitude is blank
+    latitude = request.form.get("monumentLatitude")
+    if not latitude:
+      return handle_error("must provide latitude of the monument", 400)
+
+    # Return handle_error if longitude is blank
+    longitude = request.form.get("monumentLongitude")
+    if not longitude:
+      return handle_error("must provide longitude of the monument", 400)
+
+    # Return handle_error if image url is blank
+    imageurl = request.form.get("monumentImageUrl")
+    if not imageurl:
+      return handle_error("must provide image url of the monument", 400)
+
+    agencyid = request.form.get("monumentAgency")
+    stateid = request.form.get("monumentState")
+    dateestablished = datetime.strptime(request.form.get("monumentEstablished"), '%Y-%m-%d') #2022-12-03
+    acres = request.form.get("monumentAcres")
+
+    # Update record in database
+    monument = Monument.query.filter(Monument.id==id).first()
+    monument.name = name
+    monument.description = desc
+    monument.latitude = latitude
+    monument.longitude = longitude
+    monument.agencyid = agencyid
+    monument.stateid = stateid
+    monument.dateestablished = dateestablished
+    monument.acres = acres
+    monument.imageurl = imageurl
+    db.session.commit()
+    
+    return redirect("/monuments")
 
   # User reached route via GET (as by clicking a link or via redirect)
   else:
-    return render_template("monument/edit.html")
+    states = State.query.filter(State.isdeleted == 0).order_by(State.name).all()
+    agencies = Agency.query.order_by(Agency.name).all()
+    monument = Monument.query.filter(Monument.id==id).first()
+    return render_template("monument/edit.html", monument=monument, states=states, agencies=agencies)
 
-@app.route("/monument/delete", methods=["GET", "POST"])
+@app.route("/monument/delete/<id>", methods=["GET", "POST"])
 @login_required
-def delete_monument():
+def delete_monument(id):
   """delete monument"""
 
   # User reached route via POST (as by submitting a form via POST)
   if request.method == "POST":
-    pass
+    
+    monument = Monument.query.filter(Monument.id == id).first()
+
+    if not monument:
+      return handle_error("the specific monument does not exist", 400)
+
+    # Delete record from database
+    db.session.delete(monument)
+    db.session.commit()
+    
+    return redirect("/monuments")
 
   # User reached route via GET (as by clicking a link or via redirect)
   else:
-    return render_template("monument/delete.html")
+    monument = Monument.query.filter(Monument.id==id).first()
+    return render_template("monument/delete.html", monument=monument)
 
+@app.route("/monument/details/<id>")
+@login_required
+def details_monument(id):
+  monument = Monument.query.filter(Monument.id==id).first()
+  agency = Agency.query.filter(Agency.id==monument.agencyid).first()
+  state = State.query.filter(State.id==monument.stateid).first()
+
+  return render_template("monument/details.html", monument=monument, agency=agency, state=state)
 
 if __name__ == "__main__":
   app.run(debug=True)

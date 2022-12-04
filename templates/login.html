@@ -15,6 +15,6 @@
             <input class="form-control" id="password" name="password" placeholder="Password" type="password">
         </div>
         <input type="hidden" value="{{ request.args.get('next', '') }}" name="next" />
-        <button type="submit">Login</button>
+        <button type="submit" class="primary-button">Login</button>
     </form>
 {% endblock %}

@@ -1,17 +1,10 @@
 .state__container {
+  box-shadow: 5px 5px 10px rgb(0 0 0 / 50%);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   height: 100%;
-}
-
-.state-button {
-  background-color: var(--primary_green);
-  border-color: var(--primary_green);
-  color: white;
-}
-
-.state-button:hover {
-  background-color: var(--secondary_green);
-  border-color: var(--secondary_green);
-  color: white;
 }
 
 form {

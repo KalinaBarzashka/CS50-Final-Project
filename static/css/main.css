@@ -1,9 +1,13 @@
 :root{
   --primary_green: #90B319;
   --secondary_green: #1D741B;
+  --primary_rose: #F1C0B9;
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   margin: 0;
   font-family: sans-serif;
 }
@@ -19,19 +23,20 @@ nav .navbar-brand .green
 {
     color: var(--primary_green);
 }
+
 nav .navbar-brand .rose
 {
-    color: #F1C0B9;
+    color: var(--primary_rose);
 }
 
 /* Colors for nav li */
 nav ul li a {
-  color: #1D741B;
+  color: var(--secondary_green);
 }
 
-button {
+.primary-button {
   background-color: var(--primary_green);
-  border: none;
+  border: 0px;
   color: white;
   padding: 8px 12px;
   border-radius: 10px;
@@ -39,4 +44,62 @@ button {
   margin-bottom: 5px;
 }
 
+.primary-button:hover {
+  background-color: var(--secondary_green);
+  border: 0px;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.general_container {
+  box-shadow: 5px 5px 10px rgb(0 0 0 / 50%);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  height: 100%;
+}
+
 /* https://www.canva.com/colors/color-palettes/watermelon-and-stripes/ */
+.navbar__container {
+  background-color: var(--primary_green);
+}
+
+.navbar__container a {
+  color: white;
+}
+
+.navbar__container a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.navbar-brand:hover {
+  text-decoration: none !important;
+}
+
+.navbar-brand span {
+  font-weight: 600;
+  text-shadow: #000000 1px 0 1px;
+}
+
+.app__container {
+  flex-grow: 1;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--primary_green);
+  text-align: center;
+  color: white;
+  font-weight: 500;
+}
+
+.footer-bottom {
+  padding: 1rem;
+}

@@ -5,30 +5,33 @@
 {% endblock %}
 
 {% block body %}
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Department</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for agency in agencies %}
-    <tr>
-      <th>{{agency.name}}</th>
-      <th>{{agency.department}}</th>
-      <th>
-        <a href="/agency/edit/{{agency.id}}" class="btn btn-outline-warning">Edit</a>
-        <a href="/agency/delete/{{agency.id}}" class="btn btn-outline-danger">Delete</a>
-      </th>
-    </tr>
-    {% endfor %}
-    <tr>
-      <th></th>
-      <th></th>
-      <th><a href="/agency/create" class="btn agency-button">Add new agency</a></th>
-    </tr>
-  </tbody>
-</table>
+<h1>Agencies</h1>
+<div class="agency__container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for agency in agencies %}
+      <tr>
+        <th>{{agency.name}}</th>
+        <th>{{agency.department}}</th>
+        <th>
+          <a href="/agency/edit/{{agency.id}}" class="btn btn-outline-warning">Edit</a>
+          <a href="/agency/delete/{{agency.id}}" class="btn btn-outline-danger">Delete</a>
+        </th>
+      </tr>
+      {% endfor %}
+      <tr>
+        <th></th>
+        <th></th>
+        <th><a href="/agency/create" class="btn primary-button">Add new agency</a></th>
+      </tr>
+    </tbody>
+  </table>
+</div>
 {% endblock %}

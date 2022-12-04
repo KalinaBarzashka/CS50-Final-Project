@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Monument</title>
+{% endblock %}
+
+{% block body %}
+<div class="monument__container">
+  <h1>Edit: {{monument.name}}</h1>
+  <form class="row" method="post" action="/monument/edit/{{monument.id}}">
+    <div class="col">
+      <h3>Main Information</h3>
+      <!-- Monument Name -->
+      <div class="form-group">
+        <label for="monumentName" class="form-label">Name</label>
+        <input id="monumentName" type="text" class="form-control" name="monumentName" value="{{monument.name}}">
+      </div>
+      <!-- Monument Description -->
+      <div class="form-group">
+        <label for="monumentDescription" class="form-label">Description</label>
+        <textarea id="monumentDescription" type="text" class="form-control" name="monumentDescription" rows="10"
+          maxlength="6000">{{monument.description}}</textarea>
+      </div>
+      <!-- State Name -->
+      <div class="form-group">
+        <label for="monumentState" class="form-label">State</label>
+        <select id="monumentState" class="form-control" name="monumentState">
+          {% for state in states %}
+          <option value="{{state.id}}" {% if state.id == monument.stateid %} selected {% endif %}>{{state.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <!-- Agency Name -->
+      <div class="form-group">
+        <label for="monumentAgency" class="form-label">Agency</label>
+        <select id="monumentAgency" class="form-control" name="monumentAgency">
+          {% for agency in agencies %}
+          <option value="{{agency.id}}" {% if agency.id == monument.agencyid %} selected {% endif %}>{{agency.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="col">
+      <h3>Other Details</h3>
+      <!-- Monument Latitude -->
+      <div class="form-group">
+        <label for="monumentLatitude" class="form-label">Latitude</label>
+        <input id="monumentLatitude" type="text" class="form-control" name="monumentLatitude"
+          value="{{monument.latitude}}">
+      </div>
+      <!-- Monument Longitude -->
+      <div class="form-group">
+        <label for="monumentLongitude" class="form-label">Longitude</label>
+        <input id="monumentLongitude" type="text" class="form-control" name="monumentLongitude"
+          value="{{monument.longitude}}">
+      </div>
+      <!-- Monument Image URL -->
+      <div class="form-group">
+        <label for="monumentImageUrl" class="form-label">Image URL</label>
+        <input id="monumentImageUrl" type="text" class="form-control" name="monumentImageUrl"
+          value="{{monument.imageurl}}">
+      </div>
+      <!-- Monument Date Established -->
+      <div class="form-group">
+        <label for="monumentEstablished" class="form-label">Date Established</label>
+        <input id="monumentEstablished" type="date" class="form-control" name="monumentEstablished"
+          value="{{monument.dateestablished}}">
+      </div>
+      <!-- Monument Acres -->
+      <div class="form-group">
+        <label for="monumentAcres" class="form-label">Total Acres</label>
+        <input id="monumentAcres" type="text" class="form-control" name="monumentAcres" value="{{monument.acres}}">
+      </div>
+    </div>
+    <!-- Monument Button Edit -->
+    <div class="form-group">
+      <button type="submit" class="btn primary-button">Edit Monument</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

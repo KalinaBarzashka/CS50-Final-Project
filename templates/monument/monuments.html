@@ -10,14 +10,14 @@
   {% for monument in monuments %}
   <div class="monument-item">
     <div class="monument-img-container">
-      <img [src]="monument.imageUrl" onError="this.src='assets/missing_content.png'" class="monument-img">
+      <img src="{{monument.imageurl}}" onError="this.src='assets/missing_content.png'" class="monument-img">
     </div>
     <div class="monument-body">
       <h5 class="card-title">{{monument.name}}</h5>
       <p class="card-text">{{monument.description[:100]}}...</p>
       <a href="/monument/details/{{monument.id}}" class="btn btn-read-more">Read more!</a>
-      <button class="btn btn-warning" onclick="window.location.href='{{ url_for( \'move_forward\') }}';">Edit</button>
-      <button class="btn btn-danger" onclick="">Delete</button>
+      <a href="/monument/edit/{{monument.id}}" class="btn btn-warning">Edit</a>
+      <a href="/monument/delete/{{monument.id}}" class="btn btn-danger">Delete</a>
     </div>
   </div>
   {% endfor %}

@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Monument Details</title>
+{% endblock %}
+
+{% block body %}
+<h1>{{monument.name}}</h1>
+<div class="details-monument-container">
+  <div class="details-img-container">
+    <img src="{{monument.imageurl}}" onError="this.src='assets/missing_content.png'" class="details-img">
+  </div>
+  <div class="details">
+    <div>{{monument.description}}</div>
+    <div>
+      <h4>Details:</h4>
+      <p>Agency: {{agency.name}}</p>
+      <p>State: {{state.name}}</p>
+      <p>Date Established: {{monument.dateestablished}}</p>
+      <p>Acres: {{monument.acres}}</p>
+      <br>
+      <h4>Coordinates:</h4>
+      <p>Latitude: {{monument.latitude}}</p>
+      <p>Longitude: {{monument.longitude}}</p>
+      <br>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Monument</title>
+{% endblock %}
+
+{% block body %}
+<div class="monument__container">
+  <h1>Delete Monument</h1>
+  <form class="row" method="POST" action="/monument/delete/{{monument.id}}">
+    <div class="col-4 offset-4">
+      <h3>Main Information</h3>
+      <!-- Monument Name -->
+      <div class="form-group">
+        <label for="monumentName" class="form-label">Name</label>
+        <input id="monumentName" type="text" class="form-control" name="monumentName" value="{{monument.name}}" readonly>
+      </div>
+      <!-- Monument Description -->
+      <div class="form-group">
+        <label for="monumentDescription" class="form-label">Description</label>
+        <textarea id="monumentDescription" type="text" class="form-control" name="monumentDescription" rows="10"
+        maxlength="6000" readonly>{{monument.description}}</textarea>
+      </div>
+      <!-- Monument Button Create -->
+      <div>Are you sure you want to delete this monument?</div>
+      <div class="form-group">
+        <button type="submit" class="btn primary-button">Delete Monument</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
