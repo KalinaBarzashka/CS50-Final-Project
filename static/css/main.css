@@ -1,3 +1,8 @@
+:root{
+  --primary_green: #90B319;
+  --secondary_green: #1D741B;
+}
+
 body {
   margin: 0;
   font-family: sans-serif;
@@ -12,7 +17,7 @@ nav .navbar-brand
 /* Colors for brand */
 nav .navbar-brand .green
 {
-    color: #88CA5E;
+    color: var(--primary_green);
 }
 nav .navbar-brand .rose
 {
@@ -25,7 +30,7 @@ nav ul li a {
 }
 
 button {
-  background-color: #88CA5E;
+  background-color: var(--primary_green);
   border: none;
   color: white;
   padding: 8px 12px;

@@ -1,0 +1,90 @@
+.monument-create__container {
+  height: 100%;
+}
+
+.monument-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.monument-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 320px;
+  border-radius: 5px;
+  background-color: white;
+  position: relative;
+  box-shadow: 5px 5px 10px rgb(0 0 0 / 50%);
+  margin: 8px;
+}
+
+.monument-img-container {
+  overflow: hidden;
+  height: 300px;
+}
+
+.monument-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.monument-body {
+  padding: 20px;
+}
+
+button {
+  margin-left: 5px;
+}
+
+.btn-read-more {
+  background-color: var(--primary_green);
+  border-color: var(--primary_green);
+  color: white;
+}
+
+.btn-read-more:hover {
+  background-color: var(--secondary_green);
+  border-color: var(--secondary_green);
+  color: white;
+}
+
+.disabled {
+  pointer-events:none;
+  opacity:0.4;
+}
+
+.create-button {
+  background-color: var(--primary_green);
+  border-color: var(--primary_green);
+  margin-top: 20px;
+  color: white;
+}
+
+.create-button:hover {
+  background-color: var(--secondary_green);
+  border-color: var(--secondary_green);
+  margin-top: 20px;
+  color: white;
+}
+
+form {
+  border: none;
+  margin-top: 0;
+  padding: 0;
+}
+
+.form-group {
+  padding-bottom: 5px;
+}
+
+h1, h3 {
+  text-align: center;
+  color: var(--secondary_green);
+  margin-top: 20px;
+}

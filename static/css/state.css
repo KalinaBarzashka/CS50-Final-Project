@@ -3,16 +3,14 @@
 }
 
 .state-button {
-  background-color: #88CA5E;
-  border-color: #88CA5E;
-  margin-top: 20px;
+  background-color: var(--primary_green);
+  border-color: var(--primary_green);
   color: white;
 }
 
 .state-button:hover {
-  background-color: #1D741B;
-  border-color: #1D741B;
-  margin-top: 20px;
+  background-color: var(--secondary_green);
+  border-color: var(--secondary_green);
   color: white;
 }
 
@@ -28,6 +26,6 @@ form {
 
 h1, h3 {
   text-align: center;
-  color: #1D741B;
+  color: var(--secondary_green);
   margin-top: 20px;
 }

@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Monuments</title>
+{% endblock %}
+
+{% block body %}
+<div class="monument-create__container">
+  <h1>Create Monument</h1>
+  <form class="row" method="post" action="/monument/create">
+    <div class="col">
+      <h3>Main Information</h3>
+      <!-- Monument Name -->
+      <div class="form-group">
+        <label for="monumentName" class="form-label">Name</label>
+        <input id="monumentName" type="text" class="form-control" name="monumentName">
+      </div>
+      <!-- Monument Description -->
+      <div class="form-group">
+        <label for="monumentDescription" class="form-label">Description</label>
+        <textarea id="monumentDescription" type="text" class="form-control" name="monumentDescription" rows="10"
+          maxlength="6000"></textarea>
+      </div>
+      <!-- State Name -->
+      <div class="form-group">
+        <label for="monumentState" class="form-label">State</label>
+        <select id="monumentState" class="form-control" name="monumentState">
+          {% for state in states %}
+          <option value="{{state.id}}">{{state.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <!-- Agency Name -->
+      <div class="form-group">
+        <label for="monumentAgency" class="form-label">Agency</label>
+        <select id="monumentAgency" class="form-control" name="monumentAgency">
+          {% for agency in agencies %}
+          <option value="{{agency.id}}">{{agency.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="col">
+      <h3>Other Details</h3>
+      <!-- Monument Latitude -->
+      <div class="form-group">
+        <label for="monumentLatitude" class="form-label">Latitude</label>
+        <input id="monumentLatitude" type="text" class="form-control" name="monumentLatitude">
+      </div>
+      <!-- Monument Longitude -->
+      <div class="form-group">
+        <label for="monumentLongitude" class="form-label">Longitude</label>
+        <input id="monumentLongitude" type="text" class="form-control" name="monumentLongitude">
+      </div>
+      <!-- Monument Image URL -->
+      <div class="form-group">
+        <label for="monumentImageUrl" class="form-label">Image URL</label>
+        <input id="monumentImageUrl" type="text" class="form-control" name="monumentImageUrl">
+      </div>
+      <!-- Monument Date Established -->
+      <div class="form-group">
+        <label for="monumentEstablished" class="form-label">Date Established</label>
+        <input id="monumentEstablished" type="date" class="form-control" name="monumentEstablished">
+      </div>
+      <!-- Monument Acres -->
+      <div class="form-group">
+        <label for="monumentAcres" class="form-label">Total Acres</label>
+        <input id="monumentAcres" type="text" class="form-control" name="monumentAcres">
+      </div>
+    </div>
+    <!-- Monument Button Create -->
+    <div class="form-group">
+      <button type="submit" class="btn create-button">Create Monument</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
