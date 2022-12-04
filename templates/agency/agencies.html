@@ -12,25 +12,31 @@
       <tr>
         <th>Name</th>
         <th>Department</th>
+        {% if is_admin() %}
         <th>Action</th>
+        {% endif %}
       </tr>
     </thead>
     <tbody>
       {% for agency in agencies %}
       <tr>
-        <th>{{agency.name}}</th>
-        <th>{{agency.department}}</th>
-        <th>
+        <td>{{agency.name}}</td>
+        <td>{{agency.department}}</td>
+        {% if is_admin() %}
+        <td>
           <a href="/agency/edit/{{agency.id}}" class="btn btn-outline-warning">Edit</a>
           <a href="/agency/delete/{{agency.id}}" class="btn btn-outline-danger">Delete</a>
-        </th>
+        </td>
+        {% endif %}
       </tr>
       {% endfor %}
+      {% if is_admin() %}
       <tr>
-        <th></th>
-        <th></th>
-        <th><a href="/agency/create" class="btn primary-button">Add new agency</a></th>
+        <td></td>
+        <td></td>
+        <td><a href="/agency/create" class="btn primary-button">Add new agency</a></td>
       </tr>
+      {% endif %}
     </tbody>
   </table>
 </div>

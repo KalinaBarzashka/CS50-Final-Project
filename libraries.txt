@@ -6,6 +6,7 @@ PIP is Python Package Manager
 pip3 install flask
 pip3 install flask_session
 pip3 install cs50
+pip3 install flask flask-sqlalchemy
 
 installed sqlite3; downloaded tools from sqlite3.org and added to path variable the sqlite3.exe
 sqlite3 command; .quit to exit
@@ -16,4 +17,109 @@ create table -> create table books(id INT PRIMARY KEY);
 .tables
 .schema books
 
+python -> from app import db -> db.create_all() ? with app.app_context(): db.create_all()
+
+/// -> relative path
+//// -> absolute path
+
 virtualenv package from pip3
+
+Database:
+Table Agency - Id, Name, Departament
+Table Area - Id, Name, IsDeleted, DeletedOn, CreatedOn, CreatedBy, ModifiedOn, ModifiedBy
+Table Monument - Id, Name, Latitude, Longitude, AgencyId, AreaId, DateEstablished, Acres, Description, ImageUrl, IsApproved, CreatedOn, CreatedBy, IsDeleted, DeletedOn
+Table User - Id, Name, IsAdmin
+Table Visit - UserId, MonumentId, VisitedOn, Grade, Comment
+
+create table agency(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, department TEXT NOT NULL);
+
+create table area(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, isdeleted INTEGER DEFAULT 0, deletedon TEXT, createdon TEXT, createdby TEXT);
+
+create table monument(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, latitude REAL NOT NULL, longitude REAL NOT NULL, agencyid INTEGER NOT NULL, areaid INTEGER NOT NULL,  dateestablished TEXT, acres REAL, description TEXT, imageurl TEXT NOT NULL, isapproved INTEGER DEFAULT 0, createdon TEXT, createdby TEXT, isdeleted INTEGER DEFAULT 0, deletedon TEXT,  FOREIGN KEY(agencyid) REFERENCES Agency(id), FOREIGN KEY(areaid) REFERENCES Area(id));
+
+create table user(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, isadmin INTEGER DEFAULT 0, hash TEXT, firstname TEXT, lastname TEXT);
+
+create table visit(userid INTEGER, monumentid INTEGER, visitedon TEXT NOT NULL, grade INTEGER NOT NULL, comment TEXT, PRIMARY KEY (userid, monumentid));
+
+CREATE UNIQUE INDEX username ON user(username);
+
+
+# class ToDo(db.Model):
+#   id = db.Column(db.Integer, primary_key=True)
+#   content = db.Column(db.String(200), nullable=False)
+#   date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+#   def __repr__(self):
+#     return "<Task %r>" % self.id
+
+# with app.app_context(): 
+#   print(app.name)
+#   db.create_all()
+
+
+
+python app.py
+flask run
+
+agencies = Agency.query.all()
+agencies = Agency.query.order_by(name).all()
+
+
+
+
+task_content = request.form['content']
+new_task = Todo(content=task_content)
+
+try:
+	db.session.add(new_task)
+	db.session.commit()
+	return redirect('/')
+except:
+	return 'There was an issue adding your task.'
+
+
+
+
+tasks = Todo.query.order_by(Todo.date_created).all() //first()
+
+
+//reflection or automapping
+//reflection - only query
+//automapping - create the eqivilent class for the table
+
+# con = sqlite3.connect("national-monuments.db")  
+# data = con.execute("SELECT name, department FROM agency")
+
+
+
+from sqlalchemy.ext.automap import automap_base
+
+# Configure automapping
+# agency = db.Table('agency', db.metadata, autoload=True, autoload_with=db.engine)
+Base = automap_base()
+Base.prepare(db.engine, reflect=True)
+Agency = Base.classes.agency
+
+
+
+
+db.Column(db.Integer, default=0)
+db.Column(db.DateTime, default=datetune.utcnow)
+# from datetime import datetime
+
+unique = True
+
+
+class Contact(Model):
+    id = Column(Integer, primary_key=True)
+    name =  Column(String(150), unique = True, nullable=False)
+    address =  Column(String(564), default='Street ')
+    birthday = Column(Date)
+    personal_phone = Column(String(20))
+    personal_cellphone = Column(String(20))
+    contact_group_id = Column(Integer, ForeignKey('contact_group.id'))
+    contact_group = relationship("ContactGroup")
+
+
+https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html
+https://www.oreilly.com/library/view/essential-sqlalchemy/9780596516147/ch04.html

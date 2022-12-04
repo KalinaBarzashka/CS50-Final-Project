@@ -1,72 +1,18 @@
 from flask import Flask, render_template, url_for, request, redirect, session
 from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.schema import PrimaryKeyConstraint
-from sqlalchemy.orm import relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, date
 
-from helpers import handle_error, login_required
+from models import Agency, State, Monument, User, Visit, db
+from helpers import handle_error, login_required, admin_required
 
 # Configure application
 app = Flask(__name__)
 
 # Configure database
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///national-monuments.db"
-db = SQLAlchemy(app)
-
-class Agency(db.Model):
-  id = db.Column(db.Integer, primary_key=True) # autoincrement=True
-  name = db.Column(db.String(200), nullable=False)
-  department = db.Column(db.String(200), nullable=False)
-
-  def __repr__(self):
-    return '<Task %r>' % self.id
-
-class State(db.Model):
-  id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(200), nullable=False)
-  isdeleted = db.Column(db.Boolean, default=0)
-  deletedon = db.Column(db.Date, nullable=True)
-  createdon = db.Column(db.Date, default=datetime.date(datetime.now()))
-  createdby = db.Column(db.String(100), nullable=False)
-  monumnets = relationship("Monument")
-
-class Monument(db.Model):
-  id = db.Column(db.Integer, primary_key=True)
-  name = db.Column(db.String(200), nullable=False)
-  latitude = db.Column(db.Numeric(3,6), nullable=False)
-  longitude = db.Column(db.Numeric(3,6), nullable=False)
-  agencyid = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
-  stateid = db.Column(db.Integer, db.ForeignKey('state.id'), nullable=False)
-  dateestablished = db.Column(db.Date, nullable=True)
-  acres = db.Column(db.Integer, nullable=True)
-  description = db.Column(db.String(6000), nullable=False)
-  imageurl = db.Column(db.String(512), nullable=False)
-  isapproved = db.Column(db.Boolean, default=0)
-  createdon = db.Column(db.Date, default=datetime.date(datetime.now()))
-  createdby = db.Column(db.String(100), nullable=False)
-  isdeleted = db.Column(db.Boolean, default=0)
-  deletedon = db.Column(db.Date, nullable=True)
-
-class User(db.Model):
-  id = db.Column(db.Integer, primary_key=True)
-  username = db.Column(db.String(200), nullable=False, unique=True)
-  hash = db.Column(db.String(1000), nullable=False)
-  isadmin = db.Column(db.Boolean, default=0)
-  firstname = db.Column(db.String(100), nullable=False)
-  lastname = db.Column(db.String(100), nullable=False)
-
-class Visit(db.Model):
-  userid = db.Column(db.Integer)
-  monumentid = db.Column(db.Integer)
-  visitedon = db.Column(db.Date, default=datetime.date(datetime.now()))
-  grade = db.Column(db.Integer, nullable=False)
-  comment = db.Column(db.String(500), nullable=False)
-  __table_args__ = (
-        PrimaryKeyConstraint(userid, monumentid),
-        {},
-  )
+# db = SQLAlchemy(app)
+db.init_app(app)
 
 with app.app_context(): 
     db.create_all()
@@ -190,6 +136,7 @@ def agency():
 
 @app.route("/agency/create", methods=["GET", "POST"])
 @login_required
+@admin_required
 def createAgency():
   """Create new agency"""
   # User reached route via POST (as by submitting a form via POST)
@@ -222,6 +169,7 @@ def createAgency():
   
 @app.route("/agency/edit/<id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def editAgency(id):
   """Edit agency"""
 
@@ -258,6 +206,7 @@ def editAgency(id):
 
 @app.route("/agency/delete/<id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def deleteAgency(id):
   """Delete agency"""
 
@@ -289,6 +238,7 @@ def state():
 
 @app.route("/state/create", methods=["GET", "POST"])
 @login_required
+@admin_required
 def createState():
   """Create new state"""
   # User reached route via POST (as by submitting a form via POST)
@@ -316,6 +266,7 @@ def createState():
 
 @app.route("/state/edit/<id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def editState(id):
   """Edit state"""
 
@@ -346,6 +297,7 @@ def editState(id):
 
 @app.route("/state/delete/<id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def deleteState(id):
   """Delete state"""
 
@@ -377,6 +329,7 @@ def monument():
 
 @app.route("/monument/create", methods=["GET", "POST"])
 @login_required
+@admin_required
 def createMonument():
   """Create new monument"""
 
@@ -434,6 +387,7 @@ def createMonument():
 
 @app.route("/monument/edit/<id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def editMonument(id):
   """Edit monument"""
 
@@ -500,6 +454,7 @@ def editMonument(id):
 
 @app.route("/monument/delete/<id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def delete_monument(id):
   """delete monument"""
 
@@ -531,5 +486,13 @@ def details_monument(id):
 
   return render_template("monument/details.html", monument=monument, agency=agency, state=state)
 
+@app.context_processor
+def utility_processor():
+    def is_admin():
+      userid = session["user_id"]
+      dbuser = User.query.filter(User.id == userid).first()
+      return dbuser.isadmin
+    return dict(is_admin=is_admin)
+    
 if __name__ == "__main__":
   app.run(debug=True)

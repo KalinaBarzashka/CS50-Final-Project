@@ -12,29 +12,31 @@
       <tr>
         <th>Name</th>
         <th>Monuments Count</th>
+        {% if is_admin() %}
         <th>Action</th>
+        {% endif %}
       </tr>
     </thead>
     <tbody>
       {% for state in states %}
       <tr>
-        <th>{{state.name}}</th>
-        {% if state.monumnets %}
-        <th>{{state.monuments|length}}</th>
-        {% else %}
-        <th>0</th>
-        {% endif %}
-        <th>
+        <td>{{state.name}}</td>
+        <td>{{state.monuments|length}}</td>
+        {% if is_admin() %}
+        <td>
           <a href="/state/edit/{{state.id}}" class="btn btn-outline-warning">Edit</a>
           <a href="/state/delete/{{state.id}}" class="btn btn-outline-danger">Delete</a>
-        </th>
+        </td>
+        {% endif %}
       </tr>
       {% endfor %}
+      {% if is_admin() %}
       <tr>
-        <th></th>
-        <th></th>
-        <th><a href="/state/create" class="btn primary-button">Add new state</a></th>
+        <td></td>
+        <td></td>
+        <td><a href="/state/create" class="btn primary-button">Add new state</a></td>
       </tr>
+      {% endif %}
     </tbody>
   </table>
 </div>
