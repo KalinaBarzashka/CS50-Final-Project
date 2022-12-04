@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>States</title>
+{% endblock %}
+
+{% block body %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Monuments Count</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for state in states %}
+    <tr>
+      <th>{{state.name}}</th>
+      {% if state.monumnets %}
+      <th>{{state.monuments|length}}</th>
+      {% else %}
+      <th>0</th>
+      {% endif %}
+      <th>
+        <a href="/state/edit/{{state.id}}" class="btn btn-outline-warning">Edit</a>
+        <a href="/state/delete/{{state.id}}" class="btn btn-outline-danger">Delete</a>
+      </th>
+    </tr>
+    {% endfor %}
+    <tr>
+      <th></th>
+      <th></th>
+      <th><a href="/state/create" class="btn state-button">Add new state</a></th>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

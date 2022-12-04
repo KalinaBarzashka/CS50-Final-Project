@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>States</title>
+{% endblock %}
+
+{% block body %}
+<div class="state__container">
+  <h1>Create State</h1>
+  <form class="row" method="post" action="/state/create">
+    <div class="col-4 offset-4">
+      <h3>Main Information</h3>
+      <!-- State Name -->
+      <div class="form-group">
+        <label for="stateName" class="form-label">Name</label>
+        <input id="stateName" type="text" class="form-control" name="stateName">
+      </div>
+      <!-- State Button Create -->
+      <div class="form-group">
+        <button type="submit" class="btn state-button">Create State</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+.state__container {
+  height: 100%;
+}
+
+.state-button {
+  background-color: #88CA5E;
+  border-color: #88CA5E;
+  margin-top: 20px;
+  color: white;
+}
+
+.state-button:hover {
+  background-color: #1D741B;
+  border-color: #1D741B;
+  margin-top: 20px;
+  color: white;
+}
+
+form {
+  border: none;
+  margin-top: 0;
+  padding: 0;
+}
+
+.form-group {
+  padding-bottom: 5px;
+}
+
+h1, h3 {
+  text-align: center;
+  color: #1D741B;
+  margin-top: 20px;
+}
