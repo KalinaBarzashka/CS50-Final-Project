@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <form action="/register" class="col-2 offset-5" method="post">
+    <!-- <form action="/register" class="col-2 offset-5" method="post">
         <div class="form-group">
             <label for="username" class="form-label">Username</label>
             <input autocomplete="off" autofocus class="form-control" id="username" name="username" placeholder="Username" type="text">
@@ -19,5 +19,28 @@
             <input class="form-control" id="confirmation" name="confirmation" placeholder="Password" type="password">
         </div>
         <button type="submit" class="primary-button">Register</button>
+    </form> -->
+    <br>
+    <form action="/register" class="col-3 offset-4" method="post">
+        <div class="form-group">
+            <label for="username" class="form-label">{{form.username.label}}</label>
+            {{form.username(class="form-control", placeholder="Username...")}}
+        </div>
+        <div class="form-group">
+            <label for="password" class="form-label">{{form.password.label}}</label>
+            {{form.password(class="form-control", placeholder="Password...")}}
+        </div>
+        <div class="form-group">
+            <label for="confirmation" class="form-label">{{form.confirmation.label}}</label>
+            {{form.confirmation(class="form-control", placeholder="Confirm password...")}}
+        </div>
+        <button type="submit" class="primary-button">Register</button>
+
+        {% for field, errors in form.errors.items() %}
+        <div class="alert alert-error">
+            {{ form[field].label }}: {{ ', '.join(errors) }}
+        </div>
+        {% endfor %}
     </form>
+
 {% endblock %}

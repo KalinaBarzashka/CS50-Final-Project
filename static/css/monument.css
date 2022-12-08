@@ -110,18 +110,21 @@ h1, h3 {
   border-bottom-right-radius: 10px;
 }
 
+.details p {
+  margin-bottom: 0px;
+}
+
 .details div {
-  width: 50%;
+  width: 100%;
   padding: 10px;
 }
 
 .rating-form {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   border-radius: 5px;
   padding: 5%;
-  margin-top: 5%;
   background-color: white;
 }
 

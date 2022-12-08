@@ -42,8 +42,10 @@
           <li class="nav-item"><a class="nav-link" href="/agencies">Agancies</a></li>
           <li class="nav-item"><a class="nav-link" href="/states">States</a></li>
           <li class="nav-item"><a class="nav-link" href="/monument/visited">My visits</a></li>
-          {% if is_admin() %}<li class="nav-item"><a class="nav-link" href="/monument/create">Create monument</a></li>{% endif %}
-          {% if is_admin() %}<li class="nav-item"><a class="nav-link" href="/monument/approve">Approve monument</a></li>{% endif %}
+          {% if is_admin() %}<li class="nav-item"><a class="nav-link" href="/monument/create">Create monument</a></li>{%
+          endif %}
+          {% if is_admin() %}<li class="nav-item"><a class="nav-link" href="/monument/approve">Approve monument</a></li>
+          {% endif %}
         </ul>
         <ul class="navbar-nav ms-auto mt-2">
           <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
@@ -57,6 +59,15 @@
       </div>
     </div>
   </nav>
+
+  {% if get_flashed_messages() %}
+  <header>
+    <div class="alert alert-primary mb-0 text-center" role="alert">
+      {{ get_flashed_messages() | join(" ") }}
+    </div>
+  </header>
+  {% endif %}
+
   <main class="app__container container">
     {% block body %}{% endblock %}
   </main>

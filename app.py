@@ -1,10 +1,12 @@
-from flask import Flask, render_template, url_for, request, redirect, session
+from flask import Flask, flash, render_template, url_for, request, redirect, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, date
 
 from models import Agency, State, Monument, User, Visit, db
 from helpers import handle_error, login_required, admin_required
+from wtforms import Form
+from validators import RegistrationForm
 
 # Configure application
 app = Flask(__name__)
@@ -25,37 +27,33 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+@app.after_request
+def after_request(response):
+    """Ensure responses aren't cached"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
 @app.route("/", methods=["GET"]) # decorator
 def index():
-  # first_agency = Agency(name="test", department="department1")
-  # db.session.add(first_agency)
-  # db.session.commit()
   agencies = Agency.query.count()
   monuments = Monument.query.count()
   users = User.query.count()
+
   return render_template("index.html", agencies=agencies, monuments=monuments, users=users)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
   """Register user"""
+  form = RegistrationForm(request.form)
 
-  if request.method == "POST":
+  if request.method == "POST" and form.validate():
 
-    # Return handle_error if username is blank
-    username = request.form.get("username")
-    if not username:
-      return handle_error("must provide username", 400)
-
-    # Return handle_error if password is blank
-    password = request.form.get("password")
-    confirmation = request.form.get("confirmation")
-    if not password or not confirmation:
-      return handle_error("missing password", 400)
-
-    # Return handle_error if passwords does not match
-    if password != confirmation:
-      return handle_error("passwords don't match", 400)
-
+    username = form.username.data
+    password = form.password.data
+    confirmation = form.confirmation.data
+    
     # Query to see if username is taken
     dbuser = User.query.filter(User.username == username).first()
     if dbuser:
@@ -63,17 +61,18 @@ def register():
 
     # Create User entity and populate database
     hash = generate_password_hash(password, "sha256")
-    user = User(username=username, hash=hash, firstname="firstname", lastname="lastname")
+    user = User(username=username, hash=hash, firstname="", lastname="")
     db.session.add(user)
     db.session.commit()
 
     # Redirect user to login page
     # flash("Registered!")
+    flash("Successfully registered!")
     return redirect("/login")
 
   # User reached route via GET (as by clicking a link or via redirect)
   else:
-    return render_template("register.html")
+    return render_template("register.html", form=form)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -161,6 +160,7 @@ def createAgency():
     db.session.add(agency)
     db.session.commit()
 
+    flash("Create agency successfully!")
     return redirect("/agencies")
 
   # User reached route via GET (as by clicking a link or via redirect)
@@ -197,6 +197,7 @@ def editAgency(id):
     agency.department = department
     db.session.commit()
     
+    flash("Edit agency successfully!")
     return redirect("/agencies")
 
   # User reached route via GET (as by clicking a link or via redirect)
@@ -222,6 +223,7 @@ def deleteAgency(id):
     db.session.delete(agency)
     db.session.commit()
     
+    flash("Agency deleted successfully!")
     return redirect("/agencies")
 
   # User reached route via GET (as by clicking a link or via redirect)
@@ -258,6 +260,7 @@ def createState():
     db.session.add(state)
     db.session.commit()
 
+    flash("Create state successfully!")
     return redirect("/states")
 
   # User reached route via GET (as by clicking a link or via redirect)
@@ -288,6 +291,7 @@ def editState(id):
     state.name = name
     db.session.commit()
     
+    flash("Edit state successfully!")
     return redirect("/states")
 
   # User reached route via GET (as by clicking a link or via redirect)
@@ -313,6 +317,7 @@ def deleteState(id):
     db.session.delete(state)
     db.session.commit()
     
+    flash("State deleted successfully!")
     return redirect("/states")
 
   # User reached route via GET (as by clicking a link or via redirect)
@@ -377,6 +382,7 @@ def createMonument():
     db.session.add(monument)
     db.session.commit()
 
+    flash("Create monument successfully!")
     return redirect("/monument/approve")
 
   # User reached route via GET (as by clicking a link or via redirect)
@@ -443,6 +449,7 @@ def editMonument(id):
     monument.imageurl = imageurl
     db.session.commit()
     
+    flash("Edit monument successfully!")
     return redirect("/monuments")
 
   # User reached route via GET (as by clicking a link or via redirect)
@@ -470,6 +477,7 @@ def delete_monument(id):
     db.session.delete(monument)
     db.session.commit()
     
+    flash("Monument deleted successfully!")
     return redirect("/monuments")
 
   # User reached route via GET (as by clicking a link or via redirect)
@@ -528,6 +536,7 @@ def visit_monument(id):
   db.session.add(visit)
   db.session.commit()
 
+  flash("Monument visited successfully!")
   return redirect("/monument/visited")
 
 @app.route("/monument/visited")

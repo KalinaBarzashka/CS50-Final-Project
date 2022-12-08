@@ -28,11 +28,7 @@
       <p>Longitude: {{monument.longitude}}</p>
       <br>
       {% if not isvisited %}
-      <form method="post" action="/monument/visit/{{monument.id}}" class="rating-form row">
-        <div class="form-group col">
-          <label for="comment" class="form-label">Comment</label>
-          <input id="comment" type="text" class="form-control" name="comment">
-        </div>
+      <form method="post" action="/monument/visit/{{monument.id}}" class="rating-form">
         <div class="rating-stars">
           <label for="option1" class="form-label">Grade</label>
           <br />
@@ -42,6 +38,10 @@
           <input type="radio" name="grade" id="option4" value="4"> 4 </input>
           <input type="radio" name="grade" id="option5" value="5"> 5 </input>
           <input type="radio" name="grade" id="option6" value="6"> 6 </input>
+        </div>
+        <div class="form-group">
+          <label for="comment" class="form-label">Comment</label>
+          <input id="comment" type="text" class="form-control" name="comment">
         </div>
         <button type="submit" class="btn">Visit monument</button>
       </form>

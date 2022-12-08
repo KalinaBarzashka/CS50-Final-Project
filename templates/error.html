@@ -5,5 +5,11 @@
 {% endblock %}
 
 {% block body %}
-<p>Something went wrong! Error {{code}}. {{message}}</p>
+<div id="notfound">
+  <div class="notfound-404">
+    <h1>{{code}}</h1>
+  </div>
+  <h2>Oops! Something went wrong!</h2>
+  <p>{{message}}</p>
+</div>
 {% endblock %}
