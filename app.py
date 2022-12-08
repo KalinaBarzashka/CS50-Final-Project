@@ -486,6 +486,54 @@ def details_monument(id):
 
   return render_template("monument/details.html", monument=monument, agency=agency, state=state)
 
+@app.route("/monument/approve")
+@login_required
+def not_approved_monument():
+  monuments = Monument.query.filter(Monument.isdeleted == 0, Monument.isapproved == 0).order_by(Monument.name).all()
+  return render_template("/monument/approve.html", monuments=monuments)
+
+@app.route("/monument/approve/<id>")
+@login_required
+def approve_monument(id):
+  monument = Monument.query.filter(Monument.id==id).first()
+  monument.isapproved = 1
+  db.session.commit()
+
+  return redirect("/monuments")
+
+@app.route("/monument/decline/<id>")
+@login_required
+def decline_monument(id):
+  monument = Monument.query.filter(Monument.id==id).first()
+  monument.isdeleted = 1
+  monument.deletedon = datetime.date(datetime.now())
+  db.session.commit()
+
+  return redirect("/monument/approve")
+
+@app.route("/monument/visit/<id>", methods=["POST"])
+@login_required
+def visit_monument(id):
+  # for state in states:
+  # state.monuments = list(filter(lambda monuments: monuments.isapproved == 1, state.monuments))
+  monument = Monument.query.filter(Monument.id==id).first()
+  userid = session.get("user_id")
+  grade = request.form.get("grade")
+
+  visit = Visit(userid=userid, monumentid=monument.id, grade=grade, comment="Visited!")
+  db.session.add(visit)
+  db.session.commit()
+
+  return redirect("/monument/visited")
+
+@app.route("/monument/visited")
+@login_required
+def visited_monuments():
+  visitedMonuments = Visit.query(Visit.monumentid).filter(Visit.userid == userid).all()
+
+  monuments = Monument.query.filter(Monument.id in visitedMonuments, Monument.isdeleted == 0).all()
+  return render_template("/monument/visited.html", monuments=monuments)
+
 @app.context_processor
 def utility_processor():
     def is_admin():
@@ -493,6 +541,6 @@ def utility_processor():
       dbuser = User.query.filter(User.id == userid).first()
       return dbuser.isadmin
     return dict(is_admin=is_admin)
-    
+  
 if __name__ == "__main__":
   app.run(debug=True)

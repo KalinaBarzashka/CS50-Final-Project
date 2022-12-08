@@ -14,10 +14,11 @@
     crossorigin="anonymous"></script>
 
   <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> -->
+  {% block styles %}{% endblock %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/agency.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/state.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/monument.css') }}">
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/agency.css') }}"> -->
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/state.css') }}"> -->
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/monument.css') }}"> -->
 
   <!-- https://favicon.io/emoji-favicons/money-bag/ -->
   <link href="/static/favicon.ico" rel="icon">
@@ -40,8 +41,9 @@
           <li class="nav-item"><a class="nav-link" href="/monuments">Monuments</a></li>
           <li class="nav-item"><a class="nav-link" href="/agencies">Agancies</a></li>
           <li class="nav-item"><a class="nav-link" href="/states">States</a></li>
-          <li class="nav-item"><a class="nav-link" href="/visit">My visits</a></li>
+          <li class="nav-item"><a class="nav-link" href="/monument/visited">My visits</a></li>
           {% if is_admin() %}<li class="nav-item"><a class="nav-link" href="/monument/create">Create monument</a></li>{% endif %}
+          {% if is_admin() %}<li class="nav-item"><a class="nav-link" href="/monument/approve">Approve monument</a></li>{% endif %}
         </ul>
         <ul class="navbar-nav ms-auto mt-2">
           <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>

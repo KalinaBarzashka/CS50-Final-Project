@@ -4,6 +4,10 @@
 <title>States</title>
 {% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/state.css') }}">
+{% endblock %}
+
 {% block body %}
 <div class="state__container">
   <h1>Delete State</h1>

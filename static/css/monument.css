@@ -114,3 +114,29 @@ h1, h3 {
   width: 50%;
   padding: 10px;
 }
+
+.rating-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-radius: 5px;
+  padding: 5%;
+  margin-top: 5%;
+  background-color: white;
+}
+
+.rating-form button {
+  background-color: var(--primary_green);
+  border-color: var(--primary_green);
+  color: white;
+}
+
+.rating-form button:hover {
+  background-color: var(--secondary_green);
+  border-color: var(--secondary_green);
+  color: white;
+}
+
+.rating-stars label {
+  margin: 5px;
+}
