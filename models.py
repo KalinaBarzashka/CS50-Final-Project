@@ -25,8 +25,8 @@ class State(db.Model):
 class Monument(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(200), nullable=False)
-  latitude = db.Column(db.Numeric(3,6), nullable=False)
-  longitude = db.Column(db.Numeric(3,6), nullable=False)
+  latitude = db.Column(db.Numeric(3,11), nullable=False)
+  longitude = db.Column(db.Numeric(3,11), nullable=False)
   agencyid = db.Column(db.Integer, db.ForeignKey('agency.id'), nullable=False)
   stateid = db.Column(db.Integer, db.ForeignKey('state.id'), nullable=False)
   dateestablished = db.Column(db.Date, nullable=True)

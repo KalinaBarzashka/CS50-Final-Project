@@ -16,20 +16,24 @@
       <h3>Main Information</h3>
       <!-- Agency Name -->
       <div class="form-group">
-        <label for="agencyName" class="form-label">Name</label>
-        <input id="agencyName" type="text" class="form-control" name="agencyName" value="{{agency.name}}">
+        <label for="agencyName" class="form-label">{{form.name.label}}</label>
+        {{form.name(class="form-control", value=agency.name)}}
       </div>
       <!-- Agency Department -->
       <div class="form-group">
-        <label for="agencyDepartment" class="form-label">Department</label>
-        <input id="agencyDepartment" type="text" class="form-control" name="agencyDepartment"
-          value="{{agency.department}}">
+        <label for="agencyDepartment" class="form-label">{{form.department.label}}</label>
+        {{form.department(class="form-control", value=agency.department)}}
       </div>
       <!-- Agency Button Create -->
       <div class="form-group">
         <button type="submit" class="btn primary-button">Edit Agency</button>
       </div>
     </div>
+    {% for field, errors in form.errors.items() %}
+      <div class="alert alert-error">
+        {{ form[field].label }}: {{ ', '.join(errors) }}
+      </div>
+    {% endfor %}
   </form>
 </div>
 {% endblock %}

@@ -16,15 +16,19 @@
       <h3>Main Information</h3>
       <!-- State Name -->
       <div class="form-group">
-        <label for="stateName" class="form-label">Name</label>
-        <input id="stateName" type="text" class="form-control" name="stateName">
+        <label for="stateName" class="form-label">{{form.name.label}}</label>
+        {{form.name(class="form-control")}}
       </div>
       <!-- State Button Create -->
       <div class="form-group">
         <button type="submit" class="btn primary-button">Create State</button>
       </div>
     </div>
-
+    {% for field, errors in form.errors.items() %}
+      <div class="alert alert-error">
+        {{ form[field].label }}: {{ ', '.join(errors) }}
+      </div>
+    {% endfor %}
   </form>
 </div>
 {% endblock %}

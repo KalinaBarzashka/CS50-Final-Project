@@ -6,7 +6,7 @@ from datetime import datetime, date
 from models import Agency, State, Monument, User, Visit, db
 from helpers import handle_error, login_required, admin_required
 from wtforms import Form
-from validators import RegistrationForm
+from validators import RegistrationForm, LoginForm, AgencyForm, StateForm, MonumentForm
 
 # Configure application
 app = Flask(__name__)
@@ -53,7 +53,7 @@ def register():
     username = form.username.data
     password = form.password.data
     confirmation = form.confirmation.data
-    
+
     # Query to see if username is taken
     dbuser = User.query.filter(User.username == username).first()
     if dbuser:
@@ -77,27 +77,22 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
   """Log user in"""
+  form = LoginForm(request.form)
 
   # Forget any user_id
   session.clear()
 
   # User reached route via POST (as by submitting a form via POST)
-  if request.method == "POST":
+  if request.method == "POST" and form.validate():
 
-    # Ensure username was submitted
-    if not request.form.get("username"):
-      return handle_error("must provide username", 403)
-
-    # Ensure password was submitted
-    elif not request.form.get("password"):
-      return handle_error("must provide password", 403)
+    username = form.username.data
+    password = form.password.data
 
     # Query database for username
-    username = request.form.get("username")
     user = User.query.filter(User.username == username).first()
 
     # Ensure username exists and password is correct
-    if not user or not check_password_hash(user.hash, request.form.get("password")):
+    if not user or not check_password_hash(user.hash, password):
       return handle_error("invalid username and/or password", 403)
 
     # Remember which user has logged in
@@ -114,7 +109,7 @@ def login():
 
   # User reached route via GET (as by clicking a link or via redirect)
   else:
-    return render_template("login.html")
+    return render_template("login.html", form=form)
 
 @app.route("/logout")
 def logout():
@@ -138,23 +133,19 @@ def agency():
 @admin_required
 def createAgency():
   """Create new agency"""
+  form = AgencyForm(request.form)
+
   # User reached route via POST (as by submitting a form via POST)
-  if request.method == "POST":
+  if request.method == "POST" and form.validate():
 
-    # Return handle_error if name is blank
-    name = request.form.get("agencyName")
-    if not name:
-      return handle_error("must provide name of the agency", 400)
-
+    # get data
+    name = form.name.data
+    department = form.department.data
+    # check if name already exists
     existing = Agency.query.filter(Agency.name == name).first()
 
     if existing:
       return handle_error("agency with the specific name already exists", 400)
-
-    # Return handle_error if department is blank
-    department = request.form.get("agencyDepartment")
-    if not department:
-      return handle_error("must provide department of the agency", 400)
 
     agency = Agency(name=name, department=department)
     db.session.add(agency)
@@ -165,31 +156,27 @@ def createAgency():
 
   # User reached route via GET (as by clicking a link or via redirect)
   else:
-    return render_template("agency/create.html")
+    return render_template("agency/create.html", form=form)
   
 @app.route("/agency/edit/<id>", methods=["GET", "POST"])
 @login_required
 @admin_required
 def editAgency(id):
   """Edit agency"""
+  form = AgencyForm(request.form)
 
   # User reached route via POST (as by submitting a form via POST)
-  if request.method == "POST":
+  if request.method == "POST" and form.validate():
     
-    # Return handle_error if name is blank
-    name = request.form.get("agencyName")
-    if not name:
-      return handle_error("must provide name of the agency", 400)
+    # get data
+    name = form.name.data
+    department = form.department.data
 
+    # check if name already exists
     existing = Agency.query.filter(Agency.name == name).first()
 
     if existing and str(existing.id) != id:
       return handle_error("agency with the specific name already exists", 400)
-
-    # Return handle_error if department is blank
-    department = request.form.get("agencyDepartment")
-    if not department:
-      return handle_error("must provide department of the agency", 400)
 
     # Update record in database
     agency = Agency.query.filter(Agency.id==id).first()
@@ -203,7 +190,7 @@ def editAgency(id):
   # User reached route via GET (as by clicking a link or via redirect)
   else:
     agency = Agency.query.filter(Agency.id==id).first()
-    return render_template("agency/edit.html", agency=agency)
+    return render_template("agency/edit.html", agency=agency, form=form)
 
 @app.route("/agency/delete/<id>", methods=["GET", "POST"])
 @login_required
@@ -243,14 +230,15 @@ def state():
 @admin_required
 def createState():
   """Create new state"""
+  form = StateForm(request.form)
+
   # User reached route via POST (as by submitting a form via POST)
-  if request.method == "POST":
+  if request.method == "POST" and form.validate():
 
-    # Return handle_error if name is blank
-    name = request.form.get("stateName")
-    if not name:
-      return handle_error("must provide name of the state", 400)
+    # get data
+    name = form.name.data
 
+    # check if name already exists
     existing = State.query.filter(State.name == name).first()
 
     if existing:
@@ -265,22 +253,22 @@ def createState():
 
   # User reached route via GET (as by clicking a link or via redirect)
   else:
-    return render_template("state/create.html")
+    return render_template("state/create.html", form=form)
 
 @app.route("/state/edit/<id>", methods=["GET", "POST"])
 @login_required
 @admin_required
 def editState(id):
   """Edit state"""
+  form = StateForm(request.form)
 
   # User reached route via POST (as by submitting a form via POST)
-  if request.method == "POST":
+  if request.method == "POST" and form.validate():
     
-    # Return handle_error if name is blank
-    name = request.form.get("stateName")
-    if not name:
-      return handle_error("must provide name of the state", 400)
+    # get data
+    name = form.name.data
 
+    # check if name already exists
     existing = State.query.filter(State.name == name).first()
 
     if existing and str(existing.id) != id:
@@ -297,7 +285,7 @@ def editState(id):
   # User reached route via GET (as by clicking a link or via redirect)
   else:
     state = State.query.filter(State.id==id).first()
-    return render_template("state/edit.html", state=state)
+    return render_template("state/edit.html", state=state, form=form)
 
 @app.route("/state/delete/<id>", methods=["GET", "POST"])
 @login_required
@@ -337,48 +325,32 @@ def monument():
 @admin_required
 def createMonument():
   """Create new monument"""
+  form = MonumentForm(request.form)
 
   # User reached route via POST (as by submitting a form via POST)
-  if request.method == "POST":
-
-    # Return handle_error if name is blank
-    name = request.form.get("monumentName")
-    if not name:
-      return handle_error("must provide name of the monument", 400)
-
-    # Return handle_error if name is used
+  if request.method == "POST" and form.validate():
+    
+    # get data
+    name = form.name.data
+    description = form.description.data
+    latitude = form.latitude.data
+    longitude = form.longitude.data
+    imageurl = form.imageurl.data
+    dateestablished = form.dateestablished.data
+    acres = form.acres.data
+    
+    # check if name already exists
     existing = Monument.query.filter(Monument.name == name).first()
 
     if existing:
       return handle_error("monument with the specific name already exists", 400)
 
-    # Return handle_error if description is blank
-    desc = request.form.get("monumentDescription")
-    if not desc:
-      return handle_error("must provide description of the monument", 400)
-    
-    # Return handle_error if latitude is blank
-    latitude = request.form.get("monumentLatitude")
-    if not latitude:
-      return handle_error("must provide latitude of the monument", 400)
-
-    # Return handle_error if longitude is blank
-    longitude = request.form.get("monumentLongitude")
-    if not longitude:
-      return handle_error("must provide longitude of the monument", 400)
-
-    # Return handle_error if image url is blank
-    imageurl = request.form.get("monumentImageUrl")
-    if not imageurl:
-      return handle_error("must provide image url of the monument", 400)
-
     agencyid = request.form.get("monumentAgency")
     stateid = request.form.get("monumentState")
-    dateestablished = datetime.strptime(request.form.get("monumentEstablished"), '%Y-%m-%d') #2022-12-03
-    acres = request.form.get("monumentAcres")
+    # dateestablishedformatted = datetime.strptime(dateestablished, '%Y-%m-%d') #2022-12-03
 
     # Create monument
-    monument = Monument(name=name, description=desc, latitude=latitude, longitude=longitude, agencyid=agencyid, stateid=stateid, dateestablished=dateestablished, acres=acres, imageurl=imageurl, createdby=session["user_id"])
+    monument = Monument(name=name, description=description, latitude=latitude, longitude=longitude, agencyid=agencyid, stateid=stateid, dateestablished=dateestablished, acres=acres, imageurl=imageurl, createdby=session["user_id"])
     db.session.add(monument)
     db.session.commit()
 
@@ -389,57 +361,41 @@ def createMonument():
   else:
     states = State.query.filter(State.isdeleted == 0).order_by(State.name).all()
     agencies = Agency.query.order_by(Agency.name).all()
-    return render_template("monument/create.html", states=states, agencies=agencies)
+    return render_template("monument/create.html", states=states, agencies=agencies, form=form)
 
 @app.route("/monument/edit/<id>", methods=["GET", "POST"])
 @login_required
 @admin_required
 def editMonument(id):
   """Edit monument"""
+  form = MonumentForm(request.form)
 
   # User reached route via POST (as by submitting a form via POST)
-  if request.method == "POST":
+  if request.method == "POST" and form.validate():
 
-    # Return handle_error if name is blank
-    name = request.form.get("monumentName")
-    if not name:
-      return handle_error("must provide name of the monument", 400)
-
-    # Return handle_error if name is used
+    # get data
+    name = form.name.data
+    description = form.description.data
+    latitude = form.latitude.data
+    longitude = form.longitude.data
+    imageurl = form.imageurl.data
+    dateestablished = form.dateestablished.data
+    acres = form.acres.data
+    
+    # check if name already exists
     existing = Monument.query.filter(Monument.name == name).first()
 
     if existing and str(existing.id) != id:
       return handle_error("monument with the specific name already exists", 400)
 
-    # Return handle_error if description is blank
-    desc = request.form.get("monumentDescription")
-    if not desc:
-      return handle_error("must provide description of the monument", 400)
-    
-    # Return handle_error if latitude is blank
-    latitude = request.form.get("monumentLatitude")
-    if not latitude:
-      return handle_error("must provide latitude of the monument", 400)
-
-    # Return handle_error if longitude is blank
-    longitude = request.form.get("monumentLongitude")
-    if not longitude:
-      return handle_error("must provide longitude of the monument", 400)
-
-    # Return handle_error if image url is blank
-    imageurl = request.form.get("monumentImageUrl")
-    if not imageurl:
-      return handle_error("must provide image url of the monument", 400)
-
     agencyid = request.form.get("monumentAgency")
     stateid = request.form.get("monumentState")
-    dateestablished = datetime.strptime(request.form.get("monumentEstablished"), '%Y-%m-%d') #2022-12-03
-    acres = request.form.get("monumentAcres")
+    # dateestablished = datetime.strptime(request.form.get("monumentEstablished"), '%Y-%m-%d') #2022-12-03
 
     # Update record in database
     monument = Monument.query.filter(Monument.id==id).first()
     monument.name = name
-    monument.description = desc
+    monument.description = description
     monument.latitude = latitude
     monument.longitude = longitude
     monument.agencyid = agencyid
@@ -457,7 +413,7 @@ def editMonument(id):
     states = State.query.filter(State.isdeleted == 0).order_by(State.name).all()
     agencies = Agency.query.order_by(Agency.name).all()
     monument = Monument.query.filter(Monument.id==id).first()
-    return render_template("monument/edit.html", monument=monument, states=states, agencies=agencies)
+    return render_template("monument/edit.html", monument=monument, states=states, agencies=agencies, form=form)
 
 @app.route("/monument/delete/<id>", methods=["GET", "POST"])
 @login_required

@@ -16,14 +16,13 @@
       <h3>Main Information</h3>
       <!-- Monument Name -->
       <div class="form-group">
-        <label for="monumentName" class="form-label">Name</label>
-        <input id="monumentName" type="text" class="form-control" name="monumentName">
+        <label for="monumentName" class="form-label">{{form.name.label}}</label>
+        {{form.name(class="form-control")}}
       </div>
       <!-- Monument Description -->
       <div class="form-group">
-        <label for="monumentDescription" class="form-label">Description</label>
-        <textarea id="monumentDescription" type="text" class="form-control" name="monumentDescription" rows="10"
-          maxlength="6000"></textarea>
+        <label for="monumentDescription" class="form-label">{{form.description.label}}</label>
+        {{form.description(class="form-control", rows="10", maxlength="6000")}}
       </div>
       <!-- State Name -->
       <div class="form-group">
@@ -48,34 +47,39 @@
       <h3>Other Details</h3>
       <!-- Monument Latitude -->
       <div class="form-group">
-        <label for="monumentLatitude" class="form-label">Latitude</label>
-        <input id="monumentLatitude" type="text" class="form-control" name="monumentLatitude">
+        <label for="monumentLatitude" class="form-label">{{form.latitude.label}}</label>
+        {{form.latitude(class="form-control")}}
       </div>
       <!-- Monument Longitude -->
       <div class="form-group">
-        <label for="monumentLongitude" class="form-label">Longitude</label>
-        <input id="monumentLongitude" type="text" class="form-control" name="monumentLongitude">
+        <label for="monumentLongitude" class="form-label">{{form.longitude.label}}</label>
+        {{form.longitude(class="form-control")}}
       </div>
       <!-- Monument Image URL -->
       <div class="form-group">
-        <label for="monumentImageUrl" class="form-label">Image URL</label>
-        <input id="monumentImageUrl" type="text" class="form-control" name="monumentImageUrl">
+        <label for="monumentImageUrl" class="form-label">{{form.imageurl.label}}</label>
+        {{form.imageurl(class="form-control")}}
       </div>
       <!-- Monument Date Established -->
       <div class="form-group">
-        <label for="monumentEstablished" class="form-label">Date Established</label>
-        <input id="monumentEstablished" type="date" class="form-control" name="monumentEstablished">
+        <label for="monumentEstablished" class="form-label">{{form.dateestablished.label}}</label>
+        {{form.dateestablished(class="form-control")}}
       </div>
       <!-- Monument Acres -->
       <div class="form-group">
-        <label for="monumentAcres" class="form-label">Total Acres</label>
-        <input id="monumentAcres" type="text" class="form-control" name="monumentAcres">
+        <label for="monumentAcres" class="form-label">{{form.acres.label}}</label>
+        {{form.acres(class="form-control")}}
       </div>
     </div>
     <!-- Monument Button Create -->
     <div class="form-group">
       <button type="submit" class="btn primary-button">Create Monument</button>
     </div>
+    {% for field, errors in form.errors.items() %}
+      <div class="alert alert-error">
+         {{ form[field].label }}: {{ ', '.join(errors) }}
+      </div>
+    {% endfor %}
   </form>
 </div>
 {% endblock %}
