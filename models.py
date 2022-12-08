@@ -51,8 +51,8 @@ class User(db.Model):
     return self.isadmin
 
 class Visit(db.Model):
-  userid = db.Column(db.Integer)
-  monumentid = db.Column(db.Integer)
+  userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+  monumentid = db.Column(db.Integer, db.ForeignKey('monument.id'), nullable=False)
   visitedon = db.Column(db.Date, default=datetime.date(datetime.now()))
   grade = db.Column(db.Integer, nullable=False)
   comment = db.Column(db.String(500), nullable=False)

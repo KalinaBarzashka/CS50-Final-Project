@@ -377,7 +377,7 @@ def createMonument():
     db.session.add(monument)
     db.session.commit()
 
-    return redirect("/monuments")
+    return redirect("/monument/approve")
 
   # User reached route via GET (as by clicking a link or via redirect)
   else:
@@ -484,11 +484,16 @@ def details_monument(id):
   agency = Agency.query.filter(Agency.id==monument.agencyid).first()
   state = State.query.filter(State.id==monument.stateid).first()
 
-  return render_template("monument/details.html", monument=monument, agency=agency, state=state)
+  visit = Visit.query.filter(Visit.userid == session["user_id"], Visit.monumentid == monument.id).first()
+  isvisited = False
+  if visit:
+    isvisited = True
+
+  return render_template("monument/details.html", monument=monument, agency=agency, state=state, isvisited=isvisited, visit=visit)
 
 @app.route("/monument/approve")
 @login_required
-def not_approved_monument():
+def not_approved_monuments():
   monuments = Monument.query.filter(Monument.isdeleted == 0, Monument.isapproved == 0).order_by(Monument.name).all()
   return render_template("/monument/approve.html", monuments=monuments)
 
@@ -514,13 +519,12 @@ def decline_monument(id):
 @app.route("/monument/visit/<id>", methods=["POST"])
 @login_required
 def visit_monument(id):
-  # for state in states:
-  # state.monuments = list(filter(lambda monuments: monuments.isapproved == 1, state.monuments))
   monument = Monument.query.filter(Monument.id==id).first()
   userid = session.get("user_id")
   grade = request.form.get("grade")
+  comment = request.form.get("comment")
 
-  visit = Visit(userid=userid, monumentid=monument.id, grade=grade, comment="Visited!")
+  visit = Visit(userid=userid, monumentid=monument.id, grade=grade, comment=comment)
   db.session.add(visit)
   db.session.commit()
 
@@ -528,10 +532,16 @@ def visit_monument(id):
 
 @app.route("/monument/visited")
 @login_required
-def visited_monuments():
-  visitedMonuments = Visit.query(Visit.monumentid).filter(Visit.userid == userid).all()
+def visited_monuments():  
+  visitedMonuments = Visit.query.filter(Visit.userid == session["user_id"]).all()
+  monumentIds = []
 
-  monuments = Monument.query.filter(Monument.id in visitedMonuments, Monument.isdeleted == 0).all()
+  if visitedMonuments:
+    for visitObj in visitedMonuments:
+      monumentIds.append(visitObj.monumentid)
+    
+  monuments = Monument.query.filter(Monument.id.in_(monumentIds), Monument.isdeleted == 0).all()
+
   return render_template("/monument/visited.html", monuments=monuments)
 
 @app.context_processor
