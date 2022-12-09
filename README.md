@@ -13,7 +13,7 @@ My final project for CS50 Harvard course.
 The software is powered by flask library and supports SQLite database. The front-end part is implemented via pure HTML and CSS. The project overview, functionalities, architecture and technology stack is reviewed bellow.  
 
 ## :pencil: Overview
-If you do not register, you will not be able to take a look of all the USA monument and mark them as visited.
+The idea of the website is to contain the general information for all the USA's national monuments. Here all citizens and tourists can check the location and some information for the landmarks. If the user do not register, he/she will not be able to take a look of all the USA monument and mark them as visited.
 # How can you register?
 Register online in a few simple steps by visiting the website page. Submit your:   
 :pushpin: User Name  
