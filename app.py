@@ -4,7 +4,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, date
 
 from models import Agency, State, Monument, User, Visit, db
-from helpers import handle_error, login_required, admin_required
+from helpers import handle_error, login_required, admin_required, get_user_id_from_session, set_user_id_in_session
+
 from wtforms import Form
 from validators import RegistrationForm, LoginForm, AgencyForm, StateForm, MonumentForm
 
@@ -96,7 +97,7 @@ def login():
       return handle_error("invalid username and/or password", 403)
 
     # Remember which user has logged in
-    session["user_id"] = user.id
+    set_user_id_in_session(user.id)
 
     # Get next url (the one prev to login)
     next = request.form.get("next")
@@ -244,7 +245,7 @@ def createState():
     if existing:
       return handle_error("state with the specific name already exists", 400)
 
-    state = State(name=name, createdby=session["user_id"])
+    state = State(name=name, createdby=get_user_id_from_session())
     db.session.add(state)
     db.session.commit()
 
@@ -350,7 +351,7 @@ def createMonument():
     # dateestablishedformatted = datetime.strptime(dateestablished, '%Y-%m-%d') #2022-12-03
 
     # Create monument
-    monument = Monument(name=name, description=description, latitude=latitude, longitude=longitude, agencyid=agencyid, stateid=stateid, dateestablished=dateestablished, acres=acres, imageurl=imageurl, createdby=session["user_id"])
+    monument = Monument(name=name, description=description, latitude=latitude, longitude=longitude, agencyid=agencyid, stateid=stateid, dateestablished=dateestablished, acres=acres, imageurl=imageurl, createdby=get_user_id_from_session())
     db.session.add(monument)
     db.session.commit()
 
@@ -448,7 +449,7 @@ def details_monument(id):
   agency = Agency.query.filter(Agency.id==monument.agencyid).first()
   state = State.query.filter(State.id==monument.stateid).first()
 
-  visit = Visit.query.filter(Visit.userid == session["user_id"], Visit.monumentid == monument.id).first()
+  visit = Visit.query.filter(Visit.userid == get_user_id_from_session(), Visit.monumentid == monument.id).first()
   isvisited = False
   if visit:
     isvisited = True
@@ -457,12 +458,14 @@ def details_monument(id):
 
 @app.route("/monument/approve")
 @login_required
+@admin_required
 def not_approved_monuments():
   monuments = Monument.query.filter(Monument.isdeleted == 0, Monument.isapproved == 0).order_by(Monument.name).all()
   return render_template("/monument/approve.html", monuments=monuments)
 
 @app.route("/monument/approve/<id>")
 @login_required
+@admin_required
 def approve_monument(id):
   monument = Monument.query.filter(Monument.id==id).first()
   monument.isapproved = 1
@@ -471,6 +474,7 @@ def approve_monument(id):
   return redirect("/monuments")
 
 @app.route("/monument/decline/<id>")
+@admin_required
 @login_required
 def decline_monument(id):
   monument = Monument.query.filter(Monument.id==id).first()
@@ -484,7 +488,7 @@ def decline_monument(id):
 @login_required
 def visit_monument(id):
   monument = Monument.query.filter(Monument.id==id).first()
-  userid = session.get("user_id")
+  userid = get_user_id_from_session()
   grade = request.form.get("grade")
   comment = request.form.get("comment")
 
@@ -498,7 +502,7 @@ def visit_monument(id):
 @app.route("/monument/visited")
 @login_required
 def visited_monuments():  
-  visitedMonuments = Visit.query.filter(Visit.userid == session["user_id"]).all()
+  visitedMonuments = Visit.query.filter(Visit.userid == get_user_id_from_session()).all()
   monumentIds = []
 
   if visitedMonuments:
@@ -512,7 +516,7 @@ def visited_monuments():
 @app.context_processor
 def utility_processor():
     def is_admin():
-      userid = session["user_id"]
+      userid = get_user_id_from_session()
       dbuser = User.query.filter(User.id == userid).first()
       return dbuser.isadmin
     return dict(is_admin=is_admin)

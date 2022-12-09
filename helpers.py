@@ -2,6 +2,12 @@ from flask import render_template, request, redirect, url_for, session
 from functools import wraps
 from models import User
 
+def get_user_id_from_session():
+    return session["user_id"]
+
+def set_user_id_in_session(userid):
+    session["user_id"] = userid
+
 def handle_error(message, code=400):
   """Render message in an error page to the user."""
   return render_template("error.html", code=code, message=message), code
