@@ -23,7 +23,7 @@ class AgencyForm(Form):
     department = StringField('Department', validators=[Length(min=5), InputRequired(message="Enter department of the agency please!")])
 
 class StateForm(Form):
-    name = StringField('Name', validators=[Length(min=5), InputRequired(message="Enter name of the state please!")])
+    name = StringField('Name', validators=[Length(min=4), InputRequired(message="Enter name of the state please!")])
 
 class MonumentForm(Form):
     name = StringField('Name', validators=[Length(min=5), InputRequired(message="Enter name of the monument please!")])

@@ -39,10 +39,11 @@ def after_request(response):
 @app.route("/", methods=["GET"]) # decorator
 def index():
   agencies = Agency.query.count()
+  states = State.query.count()
   monuments = Monument.query.count()
   users = User.query.count()
 
-  return render_template("index.html", agencies=agencies, monuments=monuments, users=users)
+  return render_template("index.html", agencies=agencies, states=states, monuments=monuments, users=users)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():

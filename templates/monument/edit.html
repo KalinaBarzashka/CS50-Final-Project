@@ -22,7 +22,8 @@
       <!-- Monument Description -->
       <div class="form-group">
         <label for="monumentDescription" class="form-label">{{form.description.label}}</label>
-        {{form.description(class="form-control", rows="10", maxlength="6000", value=monument.description)}}
+        <textarea class="form-control" id="description" name="description" rows="10" maxlength="6000">{{monument.description}}</textarea>
+        <!-- {{form.description(class="form-control", rows="10", maxlength="6000")}} -->
       </div>
       <!-- State Name -->
       <div class="form-group">
