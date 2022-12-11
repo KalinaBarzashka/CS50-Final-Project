@@ -10,10 +10,10 @@ My final project for CS50 Harvard course.
 
 # NationalLandmarks
   
-The software is powered by flask library and supports SQLite database. The front-end part is implemented via pure HTML and CSS. The project overview, functionalities, architecture and technology stack is reviewed bellow.  
+The software is powered by flask library and supports SQLite database. The front-end part is implemented via pure HTML, CSS and Bootstrap. The project overview, functionalities, architecture and technology stack is reviewed bellow.  
 
 ## :pencil: Overview
-The idea of the website is to contain the general information for all the USA's national monuments. Here all citizens and tourists can check the location and some information for the landmarks. If the user do not register, he/she will not be able to take a look of all the USA monument and mark them as visited.
+The idea of the website is to contain the general information for all the USA's national monuments. Here all citizens and tourists can get familiar with the monuments, check their location and some other interesting information. If the digital visitor do not register, he/she will not be able to take a look of all the USA monuments and mark them as visited.
 # How can you register?
 Register online in a few simple steps by visiting the website page. Submit your:   
 :pushpin: User Name  
@@ -47,6 +47,7 @@ The project architecture is accomplished using modern approaches in web developm
 The authentication functionality is implemented via session storage, and the authorization is made via custom decorators.  
 
 ## :gear: Technology Stack
-- Python, Flask, session storage, HTML, CSS, Bootstrap  
+- Python, Flask, session storage  
 - SQLAlchemy, WTforms  
 - SQLite  
+- HTML, CSS, Bootstrap  
